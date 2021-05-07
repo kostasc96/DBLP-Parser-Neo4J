@@ -29,7 +29,15 @@ def parser_articles(file_name, dtd1, num1):
                 if end in line:
                     index = line.find(end) + len(end)
                     xml += line[:index]
-                    xmldoc = etree.fromstring(xml, parser=parser)
+                    try:
+                        xmldoc = etree.fromstring(xml, parser=parser)
+                    except XMLSyntaxError:
+                        xml = dtd
+                        writing = False 
+                        if start in line:
+                            writing = True
+                            index = line.find(start)
+                            xml += line[index:]
                     title = xmldoc.find(".//title").text
                     year = xmldoc.find(".//year").text
                     journal = xmldoc.find(".//journal").text
@@ -37,7 +45,7 @@ def parser_articles(file_name, dtd1, num1):
                     if title:
                         for author in xmldoc.findall(".//author"):
                             authors.append(author.text)
-                    if(title == None and year == None and journal == None and len(authors) == 0):
+                    if(title == None or year == None or journal == None or len(authors) == 0):
                         continue
                     i+=1
                     print("Article")
@@ -55,12 +63,6 @@ def parser_articles(file_name, dtd1, num1):
                 elif writing:
                     xml += line
             except ParseError:
-                xml = dtd
-                continue
-            except TypeError:
-                xml = dtd
-                continue
-            except XMLSyntaxError:
                 xml = dtd
                 continue
 
@@ -83,7 +85,15 @@ def parser_inproceedings(file_name, dtd1, num1):
                 if end2 in line:
                     index2 = line.find(end2) + len(end2)
                     xml += line[:index2]
-                    xmldoc = etree.fromstring(xml, parser=parser)
+                    try:
+                        xmldoc = etree.fromstring(xml, parser=parser)
+                    except XMLSyntaxError:
+                        xml = dtd
+                        writing = False 
+                        if start2 in line:
+                            writing = True
+                            index2 = line.find(start2)
+                            xml += line[index2:]
                     title = xmldoc.find(".//title").text
                     year = xmldoc.find(".//year").text
                     booktitle = xmldoc.find(".//booktitle").text
@@ -91,7 +101,7 @@ def parser_inproceedings(file_name, dtd1, num1):
                     if title:
                         for author in xmldoc.findall(".//author"):
                             authors.append(author.text)
-                    if(title == None and year == None and booktitle == None and len(authors) == 0):
+                    if(title == None or year == None or booktitle == None or len(authors) == 0):
                         continue
                     i+=1
                     print("Inproceeding")
@@ -109,12 +119,6 @@ def parser_inproceedings(file_name, dtd1, num1):
                 elif writing:
                     xml += line
             except ParseError:
-                xml = dtd
-                continue
-            except TypeError:
-                xml = dtd
-                continue
-            except XMLSyntaxError:
                 xml = dtd
                 continue
 
@@ -137,13 +141,18 @@ def parser_incollections(file_name, dtd1, num1):
                 if end3 in line:
                     index3 = line.find(end3) + len(end3)
                     xml += line[:index3]
-                    xmldoc = etree.fromstring(xml, parser=parser)
+                    try:
+                        xmldoc = etree.fromstring(xml, parser=parser)
+                    except XMLSyntaxError:
+                        xml = dtd
+                        writing = False 
+                        if start3 in line:
+                            writing = True
+                            index3 = line.find(start3)
+                            xml += line[index3:]
                     title = xmldoc.find(".//title").text
                     year = xmldoc.find(".//year").text
                     booktitle = xmldoc.find(".//booktitle").text
-                    publisher = ""
-                    if xmldoc.find(".//publisher"):
-                        publisher = xmldoc.find(".//publisher").text
                     authors = []
                     if title:
                         for author in xmldoc.findall(".//author"):
@@ -158,44 +167,6 @@ def parser_incollections(file_name, dtd1, num1):
                     print("--------------------------------")
                     xml = dtd
                     writing = False
-                # if re.match(regexp3, line):
-                #     index3 = line.find(end3) + len(end3)
-                #     xml += line[:index3]
-                #     # if(len(re.findall("<incollection", xml)) > 1):
-                #     #     xml = dtd + "<incollection>" + line[index3:]
-                #     #     if(line[index3:].startswith(start3) or xml.count("incollection") > 2):
-                #     #         xml = dtd
-                #     #         index3 = line.find(end3) + len(end3) + line.find(start3)
-                #     #         xml += "<incollection "
-                #     #         xml += line[index3:]
-                #     #         continue
-                #     #print(xml)
-                #     xmldoc = etree.fromstring(xml, parser=parser)
-                #     i+=1
-                #     title = xmldoc.find(".//title").text
-                #     year = xmldoc.find(".//year").text
-                #     booktitle = xmldoc.find(".//booktitle").text
-                #     publisher = ""
-                #     if xmldoc.find(".//publisher"):
-                #         publisher = xmldoc.find(".//publisher").text
-                #     authors = []
-                #     if title:
-                #         for author in xmldoc.findall(".//author"):
-                #             authors.append(author.text)
-                #     if(title == None or year == None or booktitle == None or len(authors) == 0):
-                #         continue
-                #     print("Incollection")
-                #     print(str(i) + " \n" + "title:" + title + " \n" + "year:" + year + " \n" + "booktitle:" +booktitle)
-                #     for author in authors:
-                #         print(author)
-                #     print("--------------------------------")
-                #     xml = dtd + "<incollection>" + line[index3:]
-                #     #if(line[index3:].startswith(start3)):
-                #     if(start3 in line):
-                #         xml = dtd
-                #         index3 = line.find(end3) + len(end3) + line.find(start3)
-                #         xml += "<incollection "
-                #         xml += line[index3:]
 
                 if start3 in line:
                     writing = True
@@ -206,14 +177,8 @@ def parser_incollections(file_name, dtd1, num1):
             except ParseError:
                 xml = dtd
                 continue
-            except TypeError:
-                xml = dtd
-                continue
-            except XMLSyntaxError:
-                xml = dtd
-                continue
 
 
-parser_articles('dblp.xml.gz',dtd,1000)
-parser_inproceedings('dblp.xml.gz',dtd,1000)
-parser_incollections('dblp.xml.gz',dtd,1000)
+#parser_articles('dblp.xml.gz',dtd,10000)
+#parser_inproceedings('dblp.xml.gz',dtd,10000)
+parser_incollections('dblp.xml.gz',dtd,10000)
