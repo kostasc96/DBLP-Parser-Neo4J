@@ -214,6 +214,6 @@ def parser_incollections(file_name, dtd1, num1):
                 continue
 
 
-#parser_articles('dblp.xml.gz',dtd,1000)
+parser_articles('dblp.xml.gz',dtd,1000)
 parser_inproceedings('dblp.xml.gz',dtd,1000)
-#parser_incollections('dblp.xml.gz',dtd,1000)
+parser_incollections('dblp.xml.gz',dtd,1000)
