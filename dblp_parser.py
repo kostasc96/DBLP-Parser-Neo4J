@@ -11,7 +11,7 @@ parser = etree.XMLParser(load_dtd=True)
 
 dtd = '<!DOCTYPE dblp SYSTEM "dblp.dtd">'
 
-graph = Graph(password="your_password")
+graph = Graph(password="dblpDB")
 graph.delete_all()
 # graph.schema.create_uniqueness_constraint('Author', 'name')
 # graph.schema.create_uniqueness_constraint('Journal', 'name')
@@ -86,14 +86,26 @@ def parser_articles(file_name, dtd1, num1, parseAll):
                     graph.merge(journalNode)
                     articleNode = Node("Publication",title=title,year=year,pagesNo=numOfPages,category="article")
                     graph.create(articleNode)
+                    cnt = 0
                     for auth in authors:
+                        cnt += 1
                         auth.__primarylabel__ = "Author"
                         auth.__primarykey__ = "name"
                         auth_node = graph.merge(auth)
                         if auth_node != None:
-                            graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", articleNode))
+                            if cnt == 1:
+                                graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", articleNode,position="first"))
+                            elif cnt == len(authors):
+                                graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", articleNode,position="last"))
+                            else:
+                                graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", articleNode,position="middle"))
                         else:
-                            graph.create(Relationship(auth, "HAS_CONTRIBUTED", articleNode))
+                            if cnt == 1:
+                                graph.create(Relationship(auth, "HAS_CONTRIBUTED", articleNode,position="first"))
+                            elif cnt == len(authors):
+                                graph.create(Relationship(auth, "HAS_CONTRIBUTED", articleNode,position="last"))
+                            else:
+                                graph.create(Relationship(auth, "HAS_CONTRIBUTED", articleNode,position="middle"))
                     graph.create(Relationship(journalNode,"HAS_ARTICLE",articleNode))
                     i+=1
                     # print(str(i) + " \n" + "title:" + title + " \n" + "year:" + year + " \n" + "journal:" +journal + "\n" + "numOfPages:" + str(numOfPages))
@@ -175,14 +187,26 @@ def parser_inproceedings(file_name, dtd1, num1, parseAll):
                     graph.merge(bookNode)
                     inproceedingNode = Node("Publication",title=title,year=year,pagesNo=numOfPages,category="inproceeding")
                     graph.create(inproceedingNode)
+                    cnt = 0
                     for auth in authors:
+                        cnt += 1
                         auth.__primarylabel__ = "Author"
                         auth.__primarykey__ = "name"
                         auth_node = graph.merge(auth)
                         if auth_node != None:
-                            graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", inproceedingNode))
+                            if cnt == 1:
+                                graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", inproceedingNode,position="first"))
+                            elif cnt == len(authors):
+                                graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", inproceedingNode,position="last"))
+                            else:
+                                graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", inproceedingNode,position="middle"))
                         else:
-                            graph.create(Relationship(auth, "HAS_CONTRIBUTED", inproceedingNode))
+                            if cnt == 1:
+                                graph.create(Relationship(auth, "HAS_CONTRIBUTED", inproceedingNode,position="first"))
+                            elif cnt == len(authors):
+                                graph.create(Relationship(auth, "HAS_CONTRIBUTED", inproceedingNode,position="last"))
+                            else:
+                                graph.create(Relationship(auth, "HAS_CONTRIBUTED", inproceedingNode,position="middle"))
                     graph.create(Relationship(bookNode,"HAS_PUBLICATION",inproceedingNode))
                     i+=1
                     print("Inproceeding " + str(i) + " --------------------------------")
@@ -264,14 +288,26 @@ def parser_incollections(file_name, dtd1, num1, parseAll):
                     graph.merge(bookNode)
                     incollectionNode = Node("Publication",title=title,year=year,pagesNo=numOfPages,category="incollection")
                     graph.create(incollectionNode)
+                    cnt = 0
                     for auth in authors:
+                        cnt += 1
                         auth.__primarylabel__ = "Author"
                         auth.__primarykey__ = "name"
                         auth_node = graph.merge(auth)
                         if auth_node != None:
-                            graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", incollectionNode))
+                            if cnt == 1:
+                                graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", incollectionNode,position="first"))
+                            elif cnt == len(authors):
+                                graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", incollectionNode,position="last"))
+                            else:
+                                graph.create(Relationship(auth_node, "HAS_CONTRIBUTED", incollectionNode,position="middle"))
                         else:
-                            graph.create(Relationship(auth, "HAS_CONTRIBUTED", incollectionNode))
+                            if cnt == 1:
+                                graph.create(Relationship(auth, "HAS_CONTRIBUTED", incollectionNode,position="first"))
+                            elif cnt == len(authors):
+                                graph.create(Relationship(auth, "HAS_CONTRIBUTED", incollectionNode,position="last"))
+                            else:
+                                graph.create(Relationship(auth, "HAS_CONTRIBUTED", incollectionNode,position="middle"))
                     graph.create(Relationship(bookNode,"HAS_PUBLICATION",incollectionNode))
                     i+=1
                     print("Incollection " + str(i) + " --------------------------------")
